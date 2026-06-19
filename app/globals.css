@@ -1,0 +1,467 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-1: #030B1A;
+  --bg-2: #071628;
+  --bg-3: #0C1F3A;
+  --cyan: #00D9F0;
+  --cyan-bright: #22E8FF;
+  --cyan-dim: rgba(0, 217, 240, 0.55);
+  --cyan-glow: rgba(0, 217, 240, 0.22);
+  --cyan-border: rgba(0, 217, 240, 0.28);
+  --white: #FFFFFF;
+  --text-sub: rgba(255, 255, 255, 0.68);
+  --text-muted: rgba(255, 255, 255, 0.35);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-1);
+  background-image:
+    radial-gradient(ellipse at 50% 42%, #0C2244 0%, #071628 45%, #030B1A 100%);
+  color: var(--white);
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ─── Animations ─────────────────────────────── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50%       { opacity: 0.8;  transform: scale(1.4); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 18px var(--cyan-glow), 0 0 4px var(--cyan-glow); }
+  50%       { box-shadow: 0 0 32px rgba(0, 217, 240, 0.5), 0 0 8px rgba(0, 217, 240, 0.4); }
+}
+
+@keyframes shimmer {
+  0%   { text-shadow: 0 0 18px rgba(0,217,240,0.8), 0 0 40px rgba(0,217,240,0.4), 0 0 70px rgba(0,217,240,0.15); }
+  50%  { text-shadow: 0 0 28px rgba(0,217,240,1),   0 0 60px rgba(0,217,240,0.6), 0 0 90px rgba(0,217,240,0.25); }
+  100% { text-shadow: 0 0 18px rgba(0,217,240,0.8), 0 0 40px rgba(0,217,240,0.4), 0 0 70px rgba(0,217,240,0.15); }
+}
+
+.anim-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.d-100  { animation-delay: 0.1s; }
+.d-200  { animation-delay: 0.2s; }
+.d-350  { animation-delay: 0.35s; }
+.d-500  { animation-delay: 0.5s; }
+.d-650  { animation-delay: 0.65s; }
+.d-800  { animation-delay: 0.8s; }
+.d-950  { animation-delay: 0.95s; }
+.d-1100 { animation-delay: 1.1s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up { animation: none; opacity: 1; }
+}
+
+/* ─── Page shell ─────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden; /* allow vertical scroll; only block horizontal */
+  padding: clamp(24px, 5vw, 60px);
+}
+
+/* ─── Circuit SVG background ─────────────────── */
+
+.circuit-svg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Star / particle dots ───────────────────── */
+
+.star {
+  position: fixed;
+  border-radius: 50%;
+  background: var(--cyan-bright);
+  pointer-events: none;
+  z-index: 1;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--dly, 0s);
+}
+
+/* ─── Content card ───────────────────────────── */
+
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 1080px;
+  width: 100%;
+}
+
+/* ─── Avatar ─────────────────────────────────── */
+
+.avatar-ring {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan-dim);
+  background: linear-gradient(135deg, #0A2035 0%, #051525 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  animation: pulseGlow 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.avatar-initials {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.avatar-name {
+  font-family: var(--font-body), sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.06em;
+  margin-bottom: clamp(20px, 4vh, 36px);
+}
+
+/* ─── COMING SOON heading ────────────────────── */
+
+.page-title {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2rem, 5.8vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  animation: shimmer 4s ease-in-out infinite, fadeUp 0.9s ease forwards;
+  animation-delay: 0s, 0.3s;
+  opacity: 0;
+  line-height: 1.1;
+  margin-bottom: clamp(16px, 3vh, 28px);
+}
+
+/* ─── Description ────────────────────────────── */
+
+.description {
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  font-weight: 300;
+  color: var(--text-sub);
+  line-height: 1.75;
+  max-width: 480px;
+  margin-bottom: clamp(28px, 5vh, 44px);
+}
+
+/* ─── Countdown ──────────────────────────────── */
+
+.countdown {
+  display: flex;
+  gap: clamp(10px, 2vw, 20px);
+  margin-bottom: clamp(28px, 5vh, 44px);
+  align-items: flex-start;
+}
+
+.countdown-unit {
+  background: rgba(0, 217, 240, 0.06);
+  border: 1px solid var(--cyan-border);
+  border-radius: 10px;
+  padding: clamp(12px, 2vw, 18px) clamp(14px, 2.5vw, 24px);
+  text-align: center;
+  min-width: clamp(64px, 9vw, 88px);
+  backdrop-filter: blur(4px);
+}
+
+.countdown-number {
+  display: block;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  font-weight: 600;
+  color: var(--cyan);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-label {
+  display: block;
+  font-family: var(--font-body), sans-serif;
+  font-size: clamp(0.6rem, 0.9vw, 0.7rem);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* hide the colon separator in the new box style */
+.countdown-sep {
+  display: none;
+}
+
+.launched-text {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 20px var(--cyan-glow);
+  margin-bottom: clamp(28px, 5vh, 44px);
+}
+
+/* ─── Buttons ─────────────────────────────────── */
+
+.btn-group {
+  display: flex;
+  gap: clamp(12px, 2.5vw, 20px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  font-family: var(--font-body), sans-serif;
+  font-size: clamp(0.72rem, 1.1vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: clamp(12px, 2vh, 16px) clamp(28px, 4vw, 44px);
+  border-radius: 50px;
+  border: 2px solid var(--cyan);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--cyan);
+  color: #021018;
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--cyan);
+  box-shadow: 0 0 24px rgba(0, 217, 240, 0.45);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--cyan);
+}
+
+.btn-outline:hover {
+  background: rgba(0, 217, 240, 0.1);
+  box-shadow: 0 0 24px rgba(0, 217, 240, 0.3);
+}
+
+/* ─── Site URL footnote ──────────────────────── */
+
+.site-footnote {
+  position: fixed;
+  bottom: clamp(16px, 3vh, 28px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.65rem, 0.95vw, 0.75rem);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.site-footnote a {
+  color: var(--cyan-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.site-footnote a:hover {
+  color: var(--cyan);
+}
+
+/* ─── Code Scroller ──────────────────────────── */
+
+@keyframes codeScrollUp {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+.cs-wrap {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 46%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Gradient overlay fades */
+.cs-fade {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cs-fade-top {
+  top: 0; left: 0; right: 0;
+  height: clamp(60px, 14vh, 130px);
+  background: linear-gradient(to bottom, var(--bg-1) 0%, transparent 100%);
+}
+
+.cs-fade-bottom {
+  bottom: 0; left: 0; right: 0;
+  height: clamp(60px, 14vh, 130px);
+  background: linear-gradient(to top, var(--bg-1) 0%, transparent 100%);
+}
+
+.cs-fade-left {
+  top: 0; left: 0; bottom: 0;
+  width: 28%;
+  background: linear-gradient(to right, var(--bg-1) 0%, transparent 100%);
+}
+
+/* Scrolling track */
+.cs-track {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  animation: codeScrollUp 70s linear infinite;
+  will-change: transform;
+}
+
+/* Code block */
+.cs-block {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: clamp(9px, 1vw, 12px);
+  line-height: 1.7;
+  padding: 24px 16px 24px 8px;
+  white-space: pre;
+  color: #FFFFFF;
+  opacity: 0.45;
+}
+
+/* Code line */
+.cs-line {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+/* Line number */
+.cs-ln {
+  color: #5A6080;
+  user-select: none;
+  flex-shrink: 0;
+  width: 2.5ch;
+  text-align: right;
+  font-size: 0.85em;
+}
+
+/* Code text area */
+.cs-ct { flex: 1; }
+
+/* ── Token colours (VS Code Dark+ palette) ── */
+.cs-kw  { color: #569CD6; } /* keywords: blue */
+.cs-blt { color: #DCDCAA; } /* builtins/functions: yellow */
+.cs-str { color: #CE9178; } /* strings: orange */
+.cs-num { color: #B5CEA8; } /* numbers: light green */
+.cs-typ { color: #4EC9B0; } /* types/classes: teal */
+.cs-cmt { color: #6A9955; font-style: italic; } /* comments: green */
+.cs-vr  { color: #9CDCFE; } /* variables: light blue */
+.cs-jsx { color: #808080; } /* JSX punctuation: grey */
+
+/* ─── Card row ───────────────────────────────── */
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  /* Clear space above for the Logo box that hangs −30 px above each card */
+  padding-top: 16px;
+  width: 100%;
+}
+
+/* ─── Mobile ─────────────────────────────────── */
+
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+  }
+
+  .page {
+    min-height: 100dvh;
+    justify-content: flex-start;
+    padding-top: clamp(48px, 10vh, 80px);
+    padding-bottom: 80px;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Cards stack single-column and fill the available width */
+  .card-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* Mobile: code scroller spans full width at lower opacity */
+  .cs-wrap {
+    width: 100%;
+    right: 0;
+  }
+
+  .cs-block {
+    opacity: 0.22;
+    font-size: 9px;
+  }
+
+  .cs-fade-left {
+    width: 0; /* no left fade needed — full width */
+  }
+}
